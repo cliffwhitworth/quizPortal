@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import requireAuth from '../hoc/requireAuth';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
@@ -9,41 +10,59 @@ class QuizByID extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ButtonName: 'Submit',
       Name: '',
-      Stems: []
+      Stems: [],
+      Submitted: false
     };
   }
 
   componentDidMount() {
-    
-    let quizProps = { "id": this.props.location.state.quiz_id, "token": localStorage.getItem('token') };
 
-    this.props.getQuizByID(quizProps, (data) => {
-      let quiz = JSON.parse(data);
-      this.setState({
-        Name: quiz.name
-      });
-    });
+    this.props.getUserInfo((id) => {
+        if(!id) {
+          this.props.history.push('/')
+        } else {
+          let quizProps = { "id": this.props.location.state.quiz_id, "token": localStorage.getItem('token') };
 
-    this.props.getStemsByID(quizProps, (data) => {
-      this.setState({
-        Stems: data
-      });
+          this.props.getQuizByID(quizProps, (data) => {
+            let quiz = JSON.parse(data);
+            this.setState({
+              Name: quiz.name
+            });
+          });
+
+          this.props.getStemsByID(quizProps, (data) => {
+            this.setState({
+              Stems: data
+            });
+          });
+        };
     });
   }
 
   onSubmit = submitProps => (e) => {
     e.preventDefault();
-    let userResponses = [];
-    this.state.Stems.map((stem, i) => {
-      userResponses.push(e.target[`q${stem.id}`].value);
-      return 'ok';
-    })
+    if(this.state.ButtonName === 'Submit'){
+      let userResponses = [];
+      this.state.Stems.map((stem, i) => {
+        userResponses.push(e.target[`q${stem.id}`].value);
+        return 'ok';
+      })
 
-    let submitProps = { "UserResponses": userResponses, "token": localStorage.getItem('token')  };
-    this.props.gradeQuiz(submitProps, () => {
-      // this.props.history.push('/dashboard');
-    });
+      let score = 0;
+      let submitProps = { "UserResponses": userResponses, "token": localStorage.getItem('token')  };
+      this.props.gradeQuiz(submitProps, () => {
+        this.setState({
+          Submitted: true,
+          ButtonName: 'Go to Dashboard'
+        })
+        // this.props.history.push('/dashboard');
+      });
+    } else if(this.state.ButtonName === 'Go to Dashboard'){
+      this.props.history.push('/dashboard');
+    }
+
   };
 
   render() {
@@ -64,7 +83,7 @@ class QuizByID extends Component {
                    );
                 })}
                 <div className="form-group">
-                    <button className="btn btn-primary">Submit</button>
+                    <button className="btn btn-primary">{this.state.ButtonName}</button>
                 </div>
               </form>
           </div>
@@ -78,6 +97,6 @@ function mapStateToProps(state) {
   return { errorMessage: state.quiz.errorMessage };
 }
 
-export default compose(
+export default requireAuth(compose(
   connect(mapStateToProps, actions)
-)(QuizByID);
+)(QuizByID));

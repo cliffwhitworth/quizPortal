@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AUTH_FIRSTNAME, AUTH_MIDDLENAME, AUTH_LASTNAME, AUTH_USERNAME, AUTH_TOKEN, AUTH_ID, AUTH_ERROR, QUIZ_ERROR } from './types';
+import { AUTH_FIRSTNAME, AUTH_MIDDLENAME, AUTH_LASTNAME, AUTH_USERNAME, AUTH_TOKEN, AUTH_ID, AUTH_ERROR, QUIZ_ERROR, QUIZ_SCORE, QUIZ_ITEM_COUNT } from './types';
 import { api_address } from '../variables';
 
 const api = axios.create({
@@ -22,6 +22,7 @@ export const getUserInfo = callback => async dispatch => {
     dispatch({ type: AUTH_ID, payload: response.data[0].id });
     callback(response.data[0].id);
   } catch (e) {
+    callback(0);
     dispatch({ type: AUTH_ERROR, payload: 'Could not get user info' });
   }
 };
@@ -38,31 +39,31 @@ export const getQuizzesByUser = (userProps, callback) => async dispatch => {
   } catch (e) {
     dispatch({ type: QUIZ_ERROR, payload: 'Could not get quiz by ID' });
   }
+
 };
 
-export const gradeQuiz = (submitProps, callback) => async dispatch => {
+export const gradeQuiz = (submitProps, callback) => dispatch => {
 
-  console.log(submitProps.UserResponses.length);
+  let score = 0;
+  dispatch({ type: QUIZ_ITEM_COUNT, payload: submitProps.UserResponses.length });
 
-  submitProps.UserResponses.map((response, i) => {
+  submitProps.UserResponses.map(async (response, i) => {
     if(response){
-      console.log(response.split('_'));
       let splitResponse = response.split('_');
-      console.log(splitResponse[0].substr(1), splitResponse[1].substr(1));
+      try {
+        const response = await api.get(
+          'api/score/checkanswer/' + splitResponse[1].substr(1) + '/' + splitResponse[0].substr(1)
+        );
+        score += response.data[0].isCorrect;
+        dispatch({ type: QUIZ_SCORE, payload: score });
+        callback();
+      } catch (e) {
+        dispatch({ type: QUIZ_ERROR, payload: 'Could not get quiz by ID' });
+      }
     }
     return 'ok';
   })
 
-  // try {
-  //   const response = await api.get(
-  //     'api/checkAnswers/' + quizProps.id,
-  //     quizProps
-  //   );
-  //
-  //   callback(response.data);
-  // } catch (e) {
-  //   dispatch({ type: QUIZ_ERROR, payload: 'Could not get quiz by ID' });
-  // }
 };
 
 export const getOptionsByID = (quizProps, callback) => async dispatch => {
@@ -116,8 +117,6 @@ export const signup = (formProps, callback) => async dispatch => {
 
     dispatch({ type: AUTH_TOKEN, payload: response.data.token });
     localStorage.setItem('token', response.data.token);
-    dispatch({ type: AUTH_USERNAME, payload: formProps.username });
-    localStorage.setItem('username', formProps.username);
     callback();
   } catch (e) {
     dispatch({ type: AUTH_ERROR, payload: 'Username in use' });
@@ -135,8 +134,6 @@ export const signin = (formProps, callback) => async dispatch => {
 
     dispatch({ type: AUTH_TOKEN, payload: response.data.token });
     localStorage.setItem('token', response.data.token);
-    dispatch({ type: AUTH_USERNAME, payload: formProps.Username });
-    localStorage.setItem('username', formProps.Username);
     callback();
   } catch (e) {
     dispatch({ type: AUTH_ERROR, payload: 'Invalid login credentials' });
@@ -145,7 +142,6 @@ export const signin = (formProps, callback) => async dispatch => {
 
 export const signout = () => {
   localStorage.removeItem('token');
-  localStorage.removeItem('username');
 
   return {
     type: AUTH_TOKEN,

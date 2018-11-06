@@ -15,7 +15,6 @@ class Dashboard extends Component {
       // Lastname: '',
       // Username: '',
       // UserId: '',
-      Score: '0/0',
       Completed: 'No',
       Comments: '',
       Quizzes: []
@@ -54,7 +53,7 @@ class Dashboard extends Component {
                    <tr key={i}>
                     <td className="px-1"><QuizInfo quiz_id={quiz.quizId} /></td>
                     <td className="px-2">{this.state.Completed}</td>
-                    <td className="px-2">{this.state.Score}</td>
+                    <td className="px-2">{this.props.score?this.props.score:0}/{this.props.itemcount?this.props.itemcount:0}</td>
                     <td className="px-2">{this.state.Comments}</td>
                    </tr>
                  );
@@ -70,6 +69,8 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
+    score: state.quiz.quizScore,
+    itemcount: state.quiz.quizItemCount,
     firstname: state.auth.firstname,
     middlename: state.auth.middlename,
     lastname: state.auth.lastname,

@@ -7,3 +7,5 @@ export const AUTH_ID = 'auth_id';
 export const AUTH_ERROR = 'auth_error';
 
 export const QUIZ_ERROR = 'quiz_error';
+export const QUIZ_ITEM_COUNT = 'quiz_items_count';
+export const QUIZ_SCORE = 'quiz_score';
