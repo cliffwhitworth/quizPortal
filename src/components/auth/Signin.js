@@ -15,7 +15,7 @@ class Signin extends Component {
     e.preventDefault();
     let formProps = { "Username": e.target.username.value, "Password": e.target.password.value };
     this.props.signin(formProps, () => {
-      this.props.history.push('/dashboard');
+      this.props.history.push('/dashboard');     
     });
   };
 

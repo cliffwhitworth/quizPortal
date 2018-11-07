@@ -1,7 +1,8 @@
 import { QUIZ_ERROR, QUIZ_SCORE, QUIZ_ITEM_COUNT } from '../actions/types';
 
 const INITIAL_STATE = {
-  errorMessage: ''
+  errorMessage: '',
+  quizScore: 0
 }
 
 export default function(state = INITIAL_STATE, action){

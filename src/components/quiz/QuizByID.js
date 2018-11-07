@@ -13,7 +13,8 @@ class QuizByID extends Component {
       ButtonName: 'Submit',
       Name: '',
       Stems: [],
-      Submitted: false
+      Submitted: false,
+      Disabled: ''
     };
   }
 
@@ -50,14 +51,15 @@ class QuizByID extends Component {
         return 'ok';
       })
 
-      let score = 0;
+      this.setState({
+        ButtonName: 'Go to Dashboard',
+        Disabled: 'disabled',
+        Submitted: true
+      })
+
       let submitProps = { "UserResponses": userResponses, "token": localStorage.getItem('token')  };
       this.props.gradeQuiz(submitProps, () => {
-        this.setState({
-          Submitted: true,
-          ButtonName: 'Go to Dashboard'
-        })
-        // this.props.history.push('/dashboard');
+
       });
     } else if(this.state.ButtonName === 'Go to Dashboard'){
       this.props.history.push('/dashboard');
@@ -77,7 +79,7 @@ class QuizByID extends Component {
                    return (
                      <div key={i}>{i + 1}. {stem.itemText}
                       <br /><br />
-                      <Options options_id={stem.id} />
+                      <Options options_id={stem.id} disabled={this.state.Disabled} />
                       <br /><br />
                      </div>
                    );
@@ -94,7 +96,11 @@ class QuizByID extends Component {
 }
 
 function mapStateToProps(state) {
-  return { errorMessage: state.quiz.errorMessage };
+  return {
+    errorMessage: state.quiz.errorMessage,
+    quizScore: state.quiz.quizScore,
+    quizItemCount: state.quiz.quizItemCount
+  };
 }
 
 export default requireAuth(compose(

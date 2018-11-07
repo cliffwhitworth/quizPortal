@@ -14,7 +14,6 @@ class OptionsByID extends Component {
 
   componentDidMount() {
     let quizProps = { "id": this.props.options_id, "token": localStorage.getItem('token') };
-
     this.props.getOptionsByID(quizProps, (data) => {
       this.setState({
         Options: data
@@ -29,7 +28,7 @@ class OptionsByID extends Component {
       {this.state.Options.map((option, i) => {
          return (
           <div key={i}>
-            <input type="radio" name={`q${option.itemId}`} id={`q${option.itemId}_o${option.id}`} value={`q${option.itemId}_o${option.id}`} /> <label htmlFor={`q${option.itemId}_o${option.id}`}>{option.choiceText}</label>
+            <input type="radio" name={`q${option.itemId}`} id={`q${option.itemId}_o${option.id}`} value={`q${option.itemId}_o${option.id}`} disabled={this.props.disabled} /> <label htmlFor={`q${option.itemId}_o${option.id}`}>{option.choiceText}</label>
           </div>
          );
       })}
@@ -40,7 +39,9 @@ class OptionsByID extends Component {
 }
 
 function mapStateToProps(state) {
-  return { errorMessage: state.quiz.errorMessage };
+  return {
+    errorMessage: state.quiz.errorMessage
+   };
 }
 
 export default compose(

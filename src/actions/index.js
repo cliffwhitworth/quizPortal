@@ -31,13 +31,26 @@ export const getQuizzesByUser = (userProps, callback) => async dispatch => {
 
   try {
     const response = await api.get(
-      'api/quiz/user/' + userProps.id,
-      userProps
+      'api/quiz/user/' + userProps.id
     );
 
     callback(response.data);
   } catch (e) {
     dispatch({ type: QUIZ_ERROR, payload: 'Could not get quiz by ID' });
+  }
+
+};
+
+export const getAttemptsByUserQuizID = (quizProps, callback) => async dispatch => {
+
+  try {
+    const response = await api.get(
+      'api/quiz/attempts/' + quizProps.user_quiz_id
+    );
+
+    callback(response.data);
+  } catch (e) {
+    dispatch({ type: QUIZ_ERROR, payload: 'Could not get quiz by UserQuizID' });
   }
 
 };
@@ -70,8 +83,7 @@ export const getOptionsByID = (quizProps, callback) => async dispatch => {
 
   try {
     const response = await api.get(
-      'api/options/' + quizProps.id,
-      quizProps
+      'api/options/' + quizProps.id
     );
 
     callback(response.data);
@@ -84,8 +96,7 @@ export const getStemsByID = (quizProps, callback) => async dispatch => {
 
   try {
     const response = await api.get(
-      'api/stems/' + quizProps.id,
-      quizProps
+      'api/stems/' + quizProps.id
     );
 
     callback(response.data);
@@ -98,8 +109,7 @@ export const getQuizByID = (quizProps, callback) => async dispatch => {
 
   try {
     const response = await api.get(
-      'api/quiz/' + quizProps.id,
-      quizProps
+      'api/quiz/' + quizProps.id
     );
 
     callback(JSON.stringify(response.data[0]));

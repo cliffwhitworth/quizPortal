@@ -4,19 +4,13 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import QuizInfo from './quiz/QuizInfo';
+import Attempts from './quiz/Attempts';
 
 class Dashboard extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      // Firstname: '',
-      // Middlename: '',
-      // Lastname: '',
-      // Username: '',
-      // UserId: '',
-      Completed: 'No',
-      Comments: '',
       Quizzes: []
     };
   }
@@ -44,22 +38,16 @@ class Dashboard extends Component {
             <h3>Hello { this.props.firstname + ' ' + this.props.lastname }</h3>
             <h3>Available Quizzes:</h3>
             <hr />
-            <div className="pt-2">
-              <table>
-              <tbody>
-              <tr><th className="text-center px-1">QuizName</th><th className="px-2">Completed</th><th className="px-2">Grade</th><th className="px-2">Comments</th></tr>
+            <div>
               {this.state.Quizzes.map((quiz, i) => {
                  return (
-                   <tr key={i}>
-                    <td className="px-1"><QuizInfo quiz_id={quiz.quizId} /></td>
-                    <td className="px-2">{this.state.Completed}</td>
-                    <td className="px-2">{this.props.score?this.props.score:0}/{this.props.itemcount?this.props.itemcount:0}</td>
-                    <td className="px-2">{this.state.Comments}</td>
-                   </tr>
+                   <div key={i}>
+                    <strong><QuizInfo quiz_id={quiz.quizId} /></strong>
+                    <div className="pl-4">Attempts:</div>
+                    <div className="pl-4"><Attempts user_quiz_id={quiz.id} /></div>
+                   </div>
                  );
               })}
-              </tbody>
-              </table>
             </div>
           </div>
         </div>
