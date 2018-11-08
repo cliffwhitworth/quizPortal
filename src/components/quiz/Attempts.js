@@ -26,7 +26,7 @@ class Attempts extends Component {
     if(this.state.Attempts.length > 0){
       return this.state.Attempts.map((attempt, i) => {
          return (
-          <li key={i}>Attempt made on { attempt.scoreDate.split('T')[0] } has a score of { attempt.quizScore } out of { attempt.quizItems }</li>
+          <li key={i}>Attempt made on { attempt.scoreDate.split('T')[0] } has a score of { attempt.quizScore?attempt.quizScore:0 } out of { attempt.quizItems?attempt.quizItems:0 }</li>
          );
       })
     } else {

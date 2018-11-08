@@ -55,28 +55,64 @@ export const getAttemptsByUserQuizID = (quizProps, callback) => async dispatch =
 
 };
 
-export const gradeQuiz = (submitProps, callback) => dispatch => {
+export const gradeAttempt = (submitProps, callback) => dispatch => {
 
   let score = 0;
+  let count = 0;
   dispatch({ type: QUIZ_ITEM_COUNT, payload: submitProps.UserResponses.length });
 
   submitProps.UserResponses.map(async (response, i) => {
-    if(response){
-      let splitResponse = response.split('_');
-      try {
-        const response = await api.get(
-          'api/score/checkanswer/' + splitResponse[1].substr(1) + '/' + splitResponse[0].substr(1)
-        );
-        score += response.data[0].isCorrect;
-        dispatch({ type: QUIZ_SCORE, payload: score });
-        callback();
-      } catch (e) {
-        dispatch({ type: QUIZ_ERROR, payload: 'Could not get quiz by ID' });
-      }
-    }
-    return 'ok';
+    // if(response){
+        let splitResponse = response.split('_');
+        try {
+          const response = await api.get(
+            'api/score/checkanswer/' + splitResponse[1].substr(1) + '/' + splitResponse[0].substr(1)
+          );
+          score += response.data[0].isCorrect;
+          count++;
+          if(count>=submitProps.UserResponses.length){
+            dispatch({ type: QUIZ_SCORE, payload: score });
+            dispatch({ type: QUIZ_ERROR, payload: '' });
+            return callback();
+          }
+        } catch (e) {
+          count++;
+          if(count>=submitProps.UserResponses.length){
+            return dispatch({ type: QUIZ_ERROR, payload: 'Could not grade attempt' });
+          }
+        }
+      // }
   })
+};
 
+export const submitAttempt = (attemptProps, callback) => async dispatch => {
+
+  // returns token
+  try {
+    const response = await api.post(
+      'api/quiz/grade',
+      attemptProps
+    );
+
+    callback(response.data);
+  } catch (e) {
+    dispatch({ type: QUIZ_ERROR, payload: 'Unable to save attempt' });
+  }
+};
+
+export const updateAttempt = (attemptProps, callback) => async dispatch => {
+
+  // returns token
+  try {
+    const response = await api.put(
+      'api/quiz/grade/',
+      attemptProps
+    );
+
+    callback(response.data);
+  } catch (e) {
+    dispatch({ type: QUIZ_ERROR, payload: 'Unable to update attempt' });
+  }
 };
 
 export const getOptionsByID = (quizProps, callback) => async dispatch => {
@@ -99,6 +135,7 @@ export const getStemsByID = (quizProps, callback) => async dispatch => {
       'api/stems/' + quizProps.id
     );
 
+    dispatch({ type: QUIZ_ITEM_COUNT, payload: response.data.length });
     callback(response.data);
   } catch (e) {
     dispatch({ type: QUIZ_ERROR, payload: 'Could not get quiz by ID' });
@@ -144,6 +181,21 @@ export const signin = (formProps, callback) => async dispatch => {
 
     dispatch({ type: AUTH_TOKEN, payload: response.data.token });
     localStorage.setItem('token', response.data.token);
+
+    try {
+      const response = await api.get(
+        'api/users/info'
+      );
+
+      dispatch({ type: AUTH_FIRSTNAME, payload: response.data[0].firstname });
+      dispatch({ type: AUTH_MIDDLENAME, payload: response.data[0].middlename });
+      dispatch({ type: AUTH_LASTNAME, payload: response.data[0].lastname });
+      dispatch({ type: AUTH_USERNAME, payload: response.data[0].name });
+      dispatch({ type: AUTH_ID, payload: response.data[0].id });
+    } catch (e) {
+      dispatch({ type: AUTH_ERROR, payload: 'Could not get user info' });
+    }
+    
     callback();
   } catch (e) {
     dispatch({ type: AUTH_ERROR, payload: 'Invalid login credentials' });

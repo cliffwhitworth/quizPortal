@@ -52,18 +52,41 @@ class Navi extends Component {
     }
   }
 
-  render() {
-    return (
-      <div className="masthead">
-          <h3 className="text-muted">CIPRA</h3>
-          <div className="navbar navbar-dark bg-dark mb-0">
-          <div className="container">
-            <Link className="nav-link text-white" to="/">QUIZ PORTAL</Link>
-            <Nav className="navbar-nav">
-              {this.renderLinks()}
-            </Nav>
+  isAttempt(){
+    if(this.props.locationPath !== 'quizbyid'){
+      return(
+        <div className="masthead">
+            <h3 className="text-muted">CIPRA</h3>
+            <div className="navbar navbar-dark bg-dark mb-0">
+            <div className="container">
+              <Link className="nav-link text-white" to="/">QUIZ PORTAL</Link>
+              <Nav className="navbar-nav">
+                {this.renderLinks()}
+              </Nav>
+            </div>
           </div>
         </div>
+      )
+    } else {
+      return(
+        <div className="masthead">
+            <h3 className="text-muted">CIPRA</h3>
+            <div className="navbar navbar-dark bg-dark mb-0">
+            <div className="container">
+              <span className="text-white">QUIZ ATTEMPT</span>
+              <Nav className="navbar-nav">
+              </Nav>
+            </div>
+          </div>
+        </div>
+      )
+    }
+  }
+
+  render() {
+    return (
+      <div>
+      {this.isAttempt()}
       </div>
     );
   }

@@ -15,7 +15,6 @@ class Footer extends Component {
   render() {
     return (
       <div className="footer-copyright text-center bg-dark py-3 text-white">© 2018 Copyright
-      <a href="/"> CIPRA</a>
       </div>
     );
   }

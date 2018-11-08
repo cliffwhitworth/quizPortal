@@ -16,7 +16,6 @@ class QuizInfo extends Component {
 
   componentDidMount() {
     let quizProps = { "id": this.props.quiz_id, "token": localStorage.getItem('token') };
-
     this.props.getQuizByID(quizProps, (data) => {
       let quiz = JSON.parse(data);
       this.setState({
@@ -28,7 +27,7 @@ class QuizInfo extends Component {
 
   render() {
     return (
-      <Link to={{ pathname: '/quizbyid', state: { quiz_id: this.state.Id} }} className="btn btn-link">{ this.state.Name }</Link>
+      <Link to={{ pathname: '/quizbyid', state: { quiz_id: this.state.Id, user_quiz_id: this.props.user_quiz_id } }} className="btn btn-link">{ this.state.Name }</Link>
     )
   }
 

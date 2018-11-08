@@ -42,7 +42,7 @@ class Dashboard extends Component {
               {this.state.Quizzes.map((quiz, i) => {
                  return (
                    <div key={i}>
-                    <strong><QuizInfo quiz_id={quiz.quizId} /></strong>
+                    <strong><QuizInfo quiz_id={quiz.quizId} user_quiz_id={quiz.id} /></strong>
                     <div className="pl-4">Attempts:</div>
                     <div className="pl-4"><Attempts user_quiz_id={quiz.id} /></div>
                    </div>
@@ -57,8 +57,6 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    score: state.quiz.quizScore,
-    itemcount: state.quiz.quizItemCount,
     firstname: state.auth.firstname,
     middlename: state.auth.middlename,
     lastname: state.auth.lastname,

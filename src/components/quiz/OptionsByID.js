@@ -19,7 +19,10 @@ class OptionsByID extends Component {
         Options: data
       });
     });
+  }
 
+  onClick = () => (e) => {
+    this.props.enableButton();
   }
 
   render() {
@@ -28,7 +31,7 @@ class OptionsByID extends Component {
       {this.state.Options.map((option, i) => {
          return (
           <div key={i}>
-            <input type="radio" name={`q${option.itemId}`} id={`q${option.itemId}_o${option.id}`} value={`q${option.itemId}_o${option.id}`} disabled={this.props.disabled} /> <label htmlFor={`q${option.itemId}_o${option.id}`}>{option.choiceText}</label>
+            <input type="radio" onClick={this.onClick()} name={`q${option.itemId}`} id={`q${option.itemId}_o${option.id}`} value={`q${option.itemId}_o${option.id}`} disabled={this.props.disabled} /> <label htmlFor={`q${option.itemId}_o${option.id}`}>{option.choiceText}</label>
           </div>
          );
       })}
