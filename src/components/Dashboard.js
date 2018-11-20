@@ -17,6 +17,7 @@ class Dashboard extends Component {
 
   componentDidMount() {
     this.props.getUserInfo((id) => {
+        if(id === 0) this.props.history.push('/signout');
         let userProps = { "id": id, "token": localStorage.getItem('token') };
         this.props.getQuizzesByUser(userProps, (quizzes) => {
           this.setState({
@@ -42,7 +43,7 @@ class Dashboard extends Component {
               {this.state.Quizzes.map((quiz, i) => {
                  return (
                    <div key={i}>
-                    <strong><QuizInfo quiz_id={quiz.quizId} user_quiz_id={quiz.id} /></strong>
+                    <strong><QuizInfo quiz_id={quiz.quizId} user_quiz_id={quiz.id} open={quiz.open} close={quiz.close} /></strong>
                     <div className="pl-4">Attempts:</div>
                     <div className="pl-4"><Attempts user_quiz_id={quiz.id} /></div>
                    </div>

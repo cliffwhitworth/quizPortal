@@ -192,11 +192,10 @@ export const signin = (formProps, callback) => async dispatch => {
       dispatch({ type: AUTH_LASTNAME, payload: response.data[0].lastname });
       dispatch({ type: AUTH_USERNAME, payload: response.data[0].name });
       dispatch({ type: AUTH_ID, payload: response.data[0].id });
+      callback();
     } catch (e) {
       dispatch({ type: AUTH_ERROR, payload: 'Could not get user info' });
     }
-    
-    callback();
   } catch (e) {
     dispatch({ type: AUTH_ERROR, payload: 'Invalid login credentials' });
   }

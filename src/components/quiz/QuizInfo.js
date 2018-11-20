@@ -25,9 +25,25 @@ class QuizInfo extends Component {
     });
   }
 
+  checkDate () {
+    var now = new Date().toISOString();
+    if(now > this.props.open && now < this.props.close){
+      return(
+        <Link to={{ pathname: '/quizbyid', state: { quiz_id: this.state.Id, user_quiz_id: this.props.user_quiz_id } }} className="btn btn-link">{ this.state.Name }</Link>
+      )
+    }else{
+      return(
+        <span> {this.state.Name} is not available</span>
+      )
+    };
+
+  }
+
   render() {
     return (
-      <Link to={{ pathname: '/quizbyid', state: { quiz_id: this.state.Id, user_quiz_id: this.props.user_quiz_id } }} className="btn btn-link">{ this.state.Name }</Link>
+      <div>
+        {this.checkDate()}
+      </div>
     )
   }
 
